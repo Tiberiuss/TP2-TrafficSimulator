@@ -8,8 +8,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -22,10 +24,12 @@ import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import simulator.control.Controller;
 import simulator.misc.ImageEnum;
+import simulator.misc.Pair;
 import simulator.model.Event;
 import simulator.model.NewSetContClassEvent;
 import simulator.model.NewSetWeatherEvent;
@@ -33,8 +37,10 @@ import simulator.model.Road;
 import simulator.model.RoadMap;
 import simulator.model.TrafficSimObserver;
 import simulator.model.Vehicle;
+import simulator.model.Weather;
 import simulator.view.dialog.ChangeCO2ClassDialog;
 import simulator.view.dialog.ChangeWeatherDialog;
+import simulator.view.dialog.RoadsWeatherHistory;
 
 @SuppressWarnings("serial")
 public class ControlPanel extends JPanel implements TrafficSimObserver, ActionListener {
@@ -44,6 +50,7 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 	private JButton open;
 	private JButton co2;
 	private JButton weather;
+	private JButton weather_history;
 	private JButton run;
 	private JButton stop;
 	private JSpinner ticks;
@@ -52,13 +59,16 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 	private List<Vehicle> _vehiculos;
 	private List<Road> _carreteras;
 	private int _time;
-	
+	private List<Map<Weather, List<String>>> _weatherHistory;
+
 	public ControlPanel(Controller _ctrl) {
 		ControlPanel.setDefaultLocale(Locale.ENGLISH);
 		this._ctrl = _ctrl;
 		_stopped = true;
 		_vehiculos = new ArrayList<>();
 		_carreteras = new ArrayList<>();
+		_weatherHistory =new ArrayList<Map<Weather, List<String>>>();
+	
 		_time = 0;
 		_ctrl.addObserver(this);
 
@@ -69,10 +79,11 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 		open = createImageButton(ImageEnum.OPEN);
 		co2 = createImageButton(ImageEnum.CO2CLASS);
 		weather = createImageButton(ImageEnum.WEATHER);
+		weather_history = createImageButton(ImageEnum.WEATHER_HISTORY);
 		run = createImageButton(ImageEnum.RUN);
 		stop = createImageButton(ImageEnum.STOP);
-		exit = createImageButton(ImageEnum.EXIT);		
-		
+		exit = createImageButton(ImageEnum.EXIT);
+
 		JLabel ticksLabel = new JLabel(" Ticks: ");
 		ticks = new JSpinner(new SpinnerNumberModel(10, 1, 10000, 1));
 
@@ -83,6 +94,7 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 		open.setToolTipText("Open an event file");
 		co2.setToolTipText("Change CO2 class of a Vehicle");
 		weather.setToolTipText("Change Weather of a Road");
+		weather_history.setToolTipText("View Roads Weather History");
 		run.setToolTipText("Run the simulator");
 		stop.setToolTipText("Stop the simulator");
 		ticks.setToolTipText("Simulation ticks to run 1-10000");
@@ -92,6 +104,7 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 		open.addActionListener(this);
 		co2.addActionListener(this);
 		weather.addActionListener(this);
+		weather_history.addActionListener(this);
 		run.addActionListener(this);
 		stop.addActionListener(this);
 		exit.addActionListener(this);
@@ -100,6 +113,7 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 		toolBar.addSeparator();
 		toolBar.add(co2);
 		toolBar.add(weather);
+		toolBar.add(weather_history);
 		toolBar.addSeparator();
 		toolBar.add(run);
 		toolBar.add(stop);
@@ -117,9 +131,9 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 		if (n > 0 && !_stopped) {
 			try {
 				_ctrl.run(1);
-			} catch (Exception e) {		
+			} catch (Exception e) {
 				enableToolBar(true);
-				_stopped = true;			
+				_stopped = true;
 				return;
 			}
 
@@ -140,6 +154,7 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 		open.setEnabled(b);
 		co2.setEnabled(b);
 		weather.setEnabled(b);
+		weather_history.setEnabled(b);
 		run.setEnabled(b);
 		stop.setEnabled(!b);
 		ticks.setEnabled(b);
@@ -147,14 +162,13 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 
 	}
 
-	
-	private JButton createImageButton(ImageEnum img){
-		if(img.getImage()!=null)
+	private JButton createImageButton(ImageEnum img) {
+		if (img.getImage() != null)
 			return new JButton(img.getImage());
 		else
 			return new JButton(img.toString());
 	}
-	
+
 	public void actionPerformed(ActionEvent evt) {
 		if (evt.getSource() == open) {
 
@@ -191,6 +205,13 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 			if (status == 1)
 				_ctrl.addEvent(new NewSetWeatherEvent(_time + dialog.getTicks(), dialog.getPair()));
 
+		} else if (evt.getSource() == weather_history) {
+			RoadsWeatherHistory dialog = new RoadsWeatherHistory(null);
+			int status = dialog.open(_weatherHistory);
+			if (status == 1) {
+				// TODO EXAMEN
+			}
+
 		} else if (evt.getSource() == run) {
 
 			_stopped = false;
@@ -203,8 +224,8 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 
 		} else if (evt.getSource() == exit) {
 
-			int i = JOptionPane.showConfirmDialog(this.getParent(), "Are you sure you want to exit the application?", "Exit ",
-					JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+			int i = JOptionPane.showConfirmDialog(this.getParent(), "Are you sure you want to exit the application?",
+					"Exit ", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
 			if (i == JOptionPane.YES_OPTION) {
 
 				System.exit(0);
@@ -223,6 +244,18 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 		_vehiculos = map.getVehicles();
 		_carreteras = map.getRoads();
 		_time = time;
+
+		Map<Weather, List<String>> stringMap=new HashMap<Weather, List<String>>();
+		for(Weather w:Weather.values()) {
+			stringMap.put(w, new ArrayList<String>());
+		}
+		
+	
+		for(Road r:_carreteras) {
+			stringMap.get(r.getWeather()).add(r.getId());		
+		}		
+	
+		_weatherHistory.add(stringMap);
 	}
 
 	@Override
@@ -230,7 +263,8 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 	}
 
 	@Override
-	public void onReset(RoadMap map, List<Event> events, int time) {
+	public void onReset(RoadMap map, List<Event> events, int time) {		
+		_weatherHistory=new ArrayList<Map<Weather, List<String>>>();
 	}
 
 	@Override
@@ -239,7 +273,7 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 
 	@Override
 	public void onError(String err) {
-		JOptionPane.showConfirmDialog(this.getParent(), err, "",JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);	
+		JOptionPane.showConfirmDialog(this.getParent(), err, "", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
 	}
 
 }

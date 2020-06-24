@@ -25,6 +25,7 @@ public enum ImageEnum {
 	STORM("storm.png"),
 	SUNNY("sunny.png"),
 	WEATHER("weather.png"),
+	WEATHER_HISTORY("pie-chart.png"),
 	WINDY("windy.png");
 
 	private Image image = null;
