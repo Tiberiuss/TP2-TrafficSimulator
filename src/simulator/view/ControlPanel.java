@@ -173,7 +173,7 @@ public class ControlPanel extends JPanel implements TrafficSimObserver, ActionLi
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "File not found", "Error", JOptionPane.ERROR_MESSAGE);
 				} catch (JSONException | IllegalArgumentException e2) {
-					JOptionPane.showMessageDialog(null, "Invalid file", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Invalid file. "+ e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 

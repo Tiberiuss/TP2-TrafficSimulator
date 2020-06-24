@@ -1,0 +1,170 @@
+{
+	"events": [
+		{
+			"type": "new_junction",
+			"data": {
+				"time": 1,
+				"id": "j1",
+				"coor": [
+					50,
+					50
+				],
+				"ls_strategy": {
+					"type": "round_robin_lss",
+					"data": {
+						"timeslot": 5
+					}
+				},
+				"dq_strategy": {
+					"type": "move_first_dqs",
+					"data": {
+						
+					}
+				}
+			}
+		},
+		{
+			"type": "new_junction",
+			"data": {
+				"time": 1,
+				"id": "j2",
+				"coor": [
+					200,
+					50
+				],
+				"ls_strategy": {
+					"type": "round_robin_lss",
+					"data": {
+						"timeslot": 5
+					}
+				},
+				"dq_strategy": {
+					"type": "vip_dqs",
+					"data": {
+						"viptag": "_first",
+						"limit": 2
+					}
+				}
+			}
+		},
+		{
+			"type": "new_junction",
+			"data": {
+				"time": 1,
+				"id": "j3",
+				"coor": [
+					350,
+					50
+				],
+				"ls_strategy": {
+					"type": "round_robin_lss",
+					"data": {
+						"timeslot": 5
+					}
+				},
+				"dq_strategy": {
+					"type": "move_first_dqs",
+					"data": {
+						
+					}
+				}
+			}
+		},
+		{
+			"type": "new_inter_city_road",
+			"data": {
+				"time": 1,
+				"id": "r1",
+				"src": "j1",
+				"dest": "j2",
+				"length": 10000,
+				"co2limit": 500000,
+				"maxspeed": 120,
+				"weather": "SUNNY"
+			}
+		},
+		{
+			"type": "new_city_road",
+			"data": {
+				"time": 1,
+				"id": "r2",
+				"src": "j2",
+				"dest": "j3",
+				"length": 10000,
+				"co2limit": 500,
+				"maxspeed": 120,
+				"weather": "SUNNY"
+			}
+		},
+		{
+			"type": "new_vehicle",
+			"data": {
+				"time": 1,
+				"id": "v1_vip",
+				"maxspeed": 100,
+				"class": 1,
+				"itinerary": [
+					"j1",
+					"j2",
+					"j3"
+				]
+			}
+		},
+		{
+			"type": "new_vehicle",
+			"data": {
+				"time": 1,
+				"id": "c1",
+				"maxspeed": 100,
+				"class": 2,
+				"itinerary": [
+					"j1",
+					"j2",
+					"j3"
+				]
+			}
+		},
+		{
+			"type": "new_vehicle",
+			"data": {
+				"time": 1,
+				"id": "c2_first",
+				"maxspeed": 100,
+				"class": 3,
+				"itinerary": [
+					"j1",
+					"j2",
+					"j3"
+				]
+			}
+		},
+		{
+			"type": "new_vehicle",
+			"data": {
+				"time": 1,
+				"id": "v2_vip",
+				"maxspeed": 100,
+				"class": 2,
+				"itinerary": [
+					"j1",
+					"j2",
+					"j3"
+				]
+			}
+		},
+		{
+			"type": "new_vehicle",
+			"data": {
+				"time": 1,
+				"id": "c3_first",
+				"maxspeed": 100,
+				"class": 2,
+				"itinerary": [
+					"j1",
+					"j2",
+					"j3"
+				]
+			}
+		}
+	]
+}

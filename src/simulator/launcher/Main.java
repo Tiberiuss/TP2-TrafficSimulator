@@ -34,6 +34,7 @@ import simulator.factories.NewVehicleEventBuilder;
 import simulator.factories.RoundRobinStrategyBuilder;
 import simulator.factories.SetContClassEventBuilder;
 import simulator.factories.SetWeatherEventBuilder;
+import simulator.factories.VipStrategyBuilder;
 import simulator.model.DequeuingStrategy;
 import simulator.model.Event;
 import simulator.model.LightSwitchingStrategy;
@@ -158,6 +159,7 @@ public class Main {
 		List<Builder<DequeuingStrategy>> dqbs = new ArrayList<>();
 		dqbs.add(new MoveFirstStrategyBuilder());
 		dqbs.add(new MoveAllStrategyBuilder());
+		dqbs.add(new VipStrategyBuilder());
 		Factory<DequeuingStrategy> dqsFactory = new BuilderBasedFactory<>(dqbs);
 
 		List<Builder<Event>> ebs = new ArrayList<>();
