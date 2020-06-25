@@ -6,7 +6,6 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import simulator.misc.Pair;
-import simulator.model.Road;
 import simulator.model.Weather;
 import simulator.view.jtable.RoadsWeatherTableModel;
 
@@ -86,7 +83,7 @@ public class RoadsWeatherHistory extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				pickWeather((Weather) _weather.getSelectedItem());			
+				pickWeather();			
 				_status = 1;
 			}
 		});
@@ -121,14 +118,15 @@ public class RoadsWeatherHistory extends JDialog {
 
 	public int open(List<Map<Weather, List<String>>> _weatherHistory) {
 		_weatherMap = _weatherHistory;
-		pickWeather((Weather) _weather.getSelectedItem());		
+		model.setRoadsList(_weatherMap);
+		pickWeather();		
 		this.setVisible(true);
 		
 		return _status;
 	}
 	
-	private void pickWeather(Weather w) {	
-		model.setRoadsList(_weatherMap,w);
+	private void pickWeather() {	
+		model.setWeather(getWeather());
 	}
 
 	private Weather getWeather() {

@@ -24,12 +24,10 @@ import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import simulator.control.Controller;
 import simulator.misc.ImageEnum;
-import simulator.misc.Pair;
 import simulator.model.Event;
 import simulator.model.NewSetContClassEvent;
 import simulator.model.NewSetWeatherEvent;

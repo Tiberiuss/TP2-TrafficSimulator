@@ -33,8 +33,12 @@ public class RoadsWeatherTableModel extends AbstractTableModel {
 
 	}
 
-	public void setRoadsList(List<Map<Weather, List<String>>> _weatherMap, Weather weather) {
-		_roads = _weatherMap;
+	public void setRoadsList(List<Map<Weather, List<String>>> _weatherMap) {
+		_roads = _weatherMap;		
+		update();
+	}
+	
+	public void setWeather(Weather weather) {	
 		_weather = weather;
 		update();
 	}
