@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import simulator.control.Controller;
+import simulator.misc.ImageEnum;
 import simulator.model.Event;
 import simulator.model.Junction;
 import simulator.model.Road;
@@ -43,7 +44,7 @@ public class MapComponent extends JPanel implements TrafficSimObserver {
 	}
 
 	private void initGUI() {
-		_car = loadImage("car_front.png");
+		_car = ImageEnum.CAR_FRONT.getImageIO();
 	}
 
 	public void paintComponent(Graphics graphics) {
@@ -206,16 +207,6 @@ public class MapComponent extends JPanel implements TrafficSimObserver {
 		g.drawLine(x1, y1, x2, y2);
 		g.setColor(arrowColor);
 		g.fillPolygon(xpoints, ypoints, 3);
-	}
-
-	// loads an image from a file
-	private Image loadImage(String img) {
-		Image i = null;
-		try {
-			return ImageIO.read(getClass().getResourceAsStream("/icons/" + img));
-		} catch (IOException e) {
-		}
-		return i;
 	}
 
 	public void update(RoadMap map) {
