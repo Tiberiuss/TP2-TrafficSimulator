@@ -57,7 +57,7 @@ public abstract class Road extends SimulatedObject {
 		vehiculos = new SortedArrayList<Vehicle>(new Comparator<Vehicle>() {
 			@Override
 			public int compare(Vehicle v1, Vehicle v2) {
-				return Integer.compare(v1.getLocation(), v1.getLocation());
+				return Integer.compare(v1.getLocation(), v2.getLocation());
 			}
 		});
 		cruceDestino.addIncomingRoad(this);
